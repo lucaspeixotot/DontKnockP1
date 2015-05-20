@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "botoes.h"
-volatile int fechar_prog=FALSE;
-volatile int tempo;
+volatile int fechar_prog=FALSE;                          
+volatile int tempo;                                              
 volatile int tickrate;
 volatile int score;
 
@@ -80,15 +80,9 @@ void colisoes(int freeze, float pneu_x, float pneu_y,
     ///BITMAPS PARA A PARALIZAÇÃO
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);//só substitui esses aqrquivos pelos meus com o mesmo nome.
+    BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);
     BITMAP *obs = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *car = load_bitmap("imagens/carro_teste.bmp",NULL);
-
-    ///FONTS
-
-    //FONT *eras = load_font("fonts/eras.pcx", NULL, NULL);
-    //FONT *impact = load_font("fonts/impact.pcx", NULL, NULL);
-
 
     ///PARALIZAÇÃO
 
@@ -110,14 +104,11 @@ void colisoes(int freeze, float pneu_x, float pneu_y,
 
     /// FINALIZAÇÃO
 
-    //destroy_font(impact); // fontes que n consegui colocar pra funcionar.
-    //destroy_font(eras);
     destroy_bitmap(telafake);
     destroy_bitmap(pista);
     destroy_bitmap(car);
     destroy_bitmap(obs);
 }
-
 
 
 ///FUNÇÃO PARA TELA INICIAL
@@ -148,7 +139,7 @@ void pregame()
 
     ///BOTOES
 
-    botao* jogar = create_button(iniciar,iniciar_s,click_selecionado,click_ativado,-1,21);//organizei todas as coordenadas aqui.
+    botao* jogar = create_button(iniciar,iniciar_s,click_selecionado,click_ativado,-1,21);
     botao* instrucoes = create_button(instr,instr_s,click_selecionado,click_ativado,200,21);
     botao* sair = create_button(s,s_s,click_selecionado,click_ativado,601,21);
     botao* creditos = create_button(credi,credi_s,click_selecionado,click_ativado,400,21);
@@ -228,7 +219,7 @@ void creditos()
     BITMAP *but_s= load_bitmap("imagens/bot_select.bmp",NULL);
     SAMPLE *click_selecionado = load_sample("click_selecionado.wav");
     SAMPLE *click_ativado = load_sample("escolhido.wav");
-    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);//desenhei os arquivos e deixei o mesmo nome.
+    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
     BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
 
     ///BOTOES
@@ -279,23 +270,26 @@ void jogo()
     int fechar_jogo=FALSE;
     int freeze;
     int scoreatual;
-    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);//só troquei os arquivos na pasta, por um do mesmo nome.
-    BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
-    BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
-    set_close_button_callback(fechar_programa);
-    float car_x=400,car_y=490; //movi o carro pra cima
-    int marcador_obstaculos,marcador_obstaculos2;
-
-    ///INICIO DO JOGO
-
-    marcador_obstaculos=tempo;
-    marcador_obstaculos2=tempo;
-    score=0;
+    float car_x=400,car_y=490;
     float velocidade=5.0;
     float velocidade_car=3.0;
     float pneu_x,pneu_y=600,pneu2_x,pneu2_y=600;
+    int marcador_obstaculos,marcador_obstaculos2;
+    set_close_button_callback(fechar_programa);
+
+    ///INICIO DO JOGO E BITMAPS
+
+    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
+    BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);
+    BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
+    BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
+
+    srand(time(NULL));
+    marcador_obstaculos=tempo;
+    marcador_obstaculos2=tempo;
+    score=0;
     tickrate=0;
+    
     while (!fechar_prog && !fechar_jogo)
     {
         while(tickrate>0)
@@ -333,7 +327,6 @@ void jogo()
             draw_sprite(telafake,carro,car_x,car_y);
             if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
             {
-                srand(tempo);
                 pneu_x=rand()%700;
                 while (pneu_x<47)
                     pneu_x=rand()%700;
@@ -341,7 +334,6 @@ void jogo()
             }
             if (tempo - marcador_obstaculos2 >=600 && pneu2_y>=600)
             {
-                srand(rand());
                 pneu2_x=rand()%700;
                 while (pneu2_x<47)
                     pneu2_x=rand()%700;
@@ -399,6 +391,7 @@ int main()
         }
     }
     destroy_sample(musica_de_fundo);
+    destroy_sample(fundo_game);
     return 0;
 }
 END_OF_MAIN();

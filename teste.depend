@@ -1,0 +1,73 @@
+# depslib dependency file v1.0
+1431662653 source:c:\users\lucas\desktop\projeto\teste\teste\main.c
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+
+1431823878 source:c:\users\lucas\desktop\projeto\teste\iniciando\main.c
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+
+1431706333 source:c:\users\lucas\desktop\rara.c
+
+1431804995 source:c:\users\lucas\desktop\projeto\teste\iniciando\botoes.c
+	"botoes.h"
+
+1431804970 c:\users\lucas\desktop\projeto\teste\iniciando\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1431804995 source:c:\users\lucas\desktop\projeto_p1\botoes.c
+	"botoes.h"
+
+1431804970 c:\users\lucas\desktop\projeto_p1\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1431824499 source:c:\users\lucas\desktop\projeto_p1\main.c
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+
+1431908568 source:c:\users\lucas\desktop\projeto\teste\projeto_p1\botoes.c
+	"botoes.h"
+
+1431804970 c:\users\lucas\desktop\projeto\teste\projeto_p1\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1431909603 source:c:\users\lucas\desktop\projeto\teste\projeto_p1\main.c
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+
+1431908568 source:c:\users\lucas\dropbox\projeto_p1 (2)\projeto_p1\botoes.c
+	"botoes.h"
+
+1431804970 c:\users\lucas\dropbox\projeto_p1 (2)\projeto_p1\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1431909706 source:c:\users\lucas\dropbox\projeto_p1 (2)\projeto_p1\main.c
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+
+1431908568 source:c:\users\lucas\documents\desenvolvedor\projeto_p1 (2)\projeto_p1\botoes.c
+	"botoes.h"
+
+1431804970 c:\users\lucas\documents\desenvolvedor\projeto_p1 (2)\projeto_p1\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1431976182 source:c:\users\lucas\documents\desenvolvedor\projeto_p1 (2)\projeto_p1\main.c
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+

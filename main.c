@@ -153,8 +153,6 @@ void pregame()
         button_input(creditos);
         button_input(instrucoes);
         draw_sprite(telafake,bg,0,0);
-        button_update(jogar);
-        button_update(instrucoes);
         button_draw(jogar,telafake);
         button_draw(instrucoes,telafake);
         button_draw(creditos,telafake);
@@ -216,7 +214,7 @@ void creditos()
 
     ///BITMAP P/ A TELA
 
-    BITMAP* telafake = create_bitmap(SCREEN_W, SCREEN_H);
+    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
     BITMAP *but = load_bitmap("imagens/bot_img.bmp",NULL);
     BITMAP *but_s= load_bitmap("imagens/bot_select.bmp",NULL);
     SAMPLE *click_selecionado = load_sample("click_selecionado.wav");

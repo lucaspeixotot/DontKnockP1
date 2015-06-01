@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "botoes.h"
-volatile int fechar_prog=FALSE;                          
-volatile int tempo;                                              
+volatile int fechar_prog=FALSE;
+volatile int tempo;
 volatile int tickrate;
 volatile int score;
 
@@ -74,8 +74,8 @@ void inicio()
 
 /// COLISOES
 
-void colisoes(int freeze, float pneu_x, float pneu_y,
-              float pneu2_x, float pneu2_y, float car_x, float car_y, int *end_game,int scoreatual)
+void colisoes(int freeze, float pneu_x, float pneu_y, float pneu2_x, float pneu2_y,
+              float pneu3_x, float pneu3_y, float car_x, float car_y, int *end_game,int scoreatual)
 {
     ///BITMAPS PARA A PARALIZAÇÃO
 
@@ -83,6 +83,7 @@ void colisoes(int freeze, float pneu_x, float pneu_y,
     BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);
     BITMAP *obs = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *car = load_bitmap("imagens/carro_teste.bmp",NULL);
+    BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
 
     ///PARALIZAÇÃO
 
@@ -93,6 +94,7 @@ void colisoes(int freeze, float pneu_x, float pneu_y,
         draw_sprite(telafake,car,car_x,car_y);
         draw_sprite(telafake,obs,pneu_x,pneu_y);
         draw_sprite(telafake,obs,pneu2_x,pneu2_y);
+        draw_sprite(telafake,banana,pneu3_x,pneu3_y);
         textout_ex(telafake,font,"BATEU MININU",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
         textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",scoreatual);
         draw_sprite(screen,telafake,0,0);
@@ -261,7 +263,8 @@ void creditos()
     destroy_sample(click_selecionado);
 }
 
-///FUNÇÃO PARA RODAR O JOGO
+
+///FUNÇÃO PARA RODAR O JOGO ( FASE 1 e FASE 2 )
 
 void jogo()
 {
@@ -273,8 +276,8 @@ void jogo()
     float car_x=400,car_y=490;
     float velocidade=5.0;
     float velocidade_car=3.0;
-    float pneu_x,pneu_y=600,pneu2_x,pneu2_y=600;
-    int marcador_obstaculos,marcador_obstaculos2;
+    float pneu_x,pneu_y=600,pneu2_x,pneu2_y=600,pneu3_x,pneu3_y=600;
+    int marcador_obstaculos,marcador_obstaculos2,marcador_obstaculos3;
     set_close_button_callback(fechar_programa);
 
     ///INICIO DO JOGO E BITMAPS
@@ -283,13 +286,15 @@ void jogo()
     BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
+    BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
 
     srand(time(NULL));
     marcador_obstaculos=tempo;
     marcador_obstaculos2=tempo;
+    marcador_obstaculos3=tempo;
     score=0;
     tickrate=0;
-    
+
     while (!fechar_prog && !fechar_jogo)
     {
         while(tickrate>0)
@@ -312,6 +317,7 @@ void jogo()
             ///UPDATE DAS VARIAVEIS
             pneu_y=pneu_y+velocidade;
             pneu2_y=pneu2_y+velocidade;
+            pneu3_y=pneu3_y+velocidade;
             if (car_x>=700)
             {
                     car_x=car_x-velocidade_car;
@@ -331,8 +337,9 @@ void jogo()
                 while (pneu_x<47)
                     pneu_x=rand()%700;
                 pneu_y=0;
+                marcador_obstaculos=tempo;
             }
-            if (tempo - marcador_obstaculos2 >=600 && pneu2_y>=600)
+            if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
             {
                 pneu2_x=rand()%700;
                 while (pneu2_x<47)
@@ -340,15 +347,31 @@ void jogo()
                 pneu2_y=0;
                 marcador_obstaculos2=tempo;
             }
+            if (tempo - marcador_obstaculos3 >=1200 && pneu3_y>=600)
+            {
+                pneu3_x=rand()%700;
+                while (pneu3_x<47)
+                    pneu3_x=rand()%700;
+                pneu3_y=0;
+                marcador_obstaculos3=tempo;
+            }
             draw_sprite(telafake,pneu,pneu_x,pneu_y);
             draw_sprite(telafake,pneu,pneu2_x,pneu2_y);
+            draw_sprite(telafake,banana,pneu3_x,pneu3_y);
             textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
-            if (colisao_de_poligonos(pneu_x, pneu_y, pneu->w, pneu->h, car_x, car_y, carro->w, carro->h)== TRUE ||
-                colisao_de_poligonos(pneu2_x, pneu2_y, pneu->w, pneu->h, car_x, car_y, carro->w, carro->h)== TRUE)
+            if (score == 55)
+            {
+                velocidade=7.5;
+                /// Aqui terá duas funções, uma para mudar para a tela mudança_de_fase, pra informar que a pessoa está indo para
+                /// a fase 2. E o recomeço dessa mesma função, porém com um fundo diferente e com os objetos caindo mais rápido.
+            }
+            else if (colisao_de_poligonos(pneu_x, pneu_y, pneu->w, pneu->h, car_x, car_y, carro->w, carro->h)== TRUE ||
+                colisao_de_poligonos(pneu2_x, pneu2_y, pneu->w, pneu->h, car_x, car_y, carro->w, carro->h)== TRUE ||
+                colisao_de_poligonos(pneu3_x, pneu3_y , pneu->w, pneu->h, car_x, car_y, carro->w, carro->h) == TRUE)
             {
                 freeze=tempo;
                 scoreatual=score;
-                colisoes(freeze,pneu_x,pneu_y,pneu2_x,pneu2_y,car_x,car_y, &fechar_jogo, scoreatual);
+                colisoes(freeze,pneu_x,pneu_y,pneu2_x,pneu2_y, pneu3_x, pneu3_y,car_x,car_y, &fechar_jogo, scoreatual);
             }
             draw_sprite(screen,telafake,0,0);
             clear(telafake);
@@ -356,12 +379,13 @@ void jogo()
         }
     }
 
-    //FINALIZAÇÃO
+    ///FINALIZAÇÃO
 
     destroy_bitmap(telafake);
     destroy_bitmap(pista);
     destroy_bitmap(pneu);
     destroy_bitmap(carro);
+    destroy_bitmap(banana);
 
 }
 
@@ -371,7 +395,7 @@ void jogo()
 int main()
 {
     inicio();
-    SAMPLE *musica_de_fundo = load_sample("ayrton_gente_fina.wav");
+    SAMPLE *musica_de_fundo = load_sample("fundo2.wav");
     SAMPLE *fundo_game = load_sample("fundo.wav");
 
     while (!fechar_prog)

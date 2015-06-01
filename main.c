@@ -7,14 +7,42 @@ volatile int tempo;
 volatile int tickrate;
 volatile int score;
 
-int colisao_de_poligonos(float x1, float y1, int ximg, int yimg, float xcar, float ycar, int xcarimg, int ycarimg)
+float maior(float n1, float n2)
 {
-    if (x1 > xcar+xcarimg || y1 > ycar+ycarimg || xcar > x1+ximg || ycar > y1+yimg)
-    {
-        return FALSE;
-    }
+    if (n2 >= n1)
+        return n2;
     else
-     return TRUE;
+        return n1;
+}
+float menor(float n1, float n2)
+{
+    if (n2 >= n1)
+        return n1;
+    else
+        return n2;
+}
+int colisao_pixel_per_pixel(BITMAP* car, float car_x, float car_y, BITMAP* obstaculo, float obs_x, float obs_y)
+{
+    int x,y;
+    int lim_superior, lim_inferior, lim_esquerda, lim_direita;
+    int colisao = FALSE;
+    if ( !(car_x > obs_x + obstaculo->w || car_y > obs_y + obstaculo->h ||
+        obs_x > car_x + car->w || obs_y > car_y + car->h))
+    {
+        lim_superior = maior(car_y,obs_y);
+        lim_inferior = menor(car_y + car->h,obs_y + obstaculo->h);
+        lim_esquerda = maior(car_x,obs_x);
+        lim_direita = menor(car_x + car->w,obs_x + obstaculo->w);
+        for (y = lim_superior ; y < lim_inferior && !colisao ; y++)
+        {
+            for (x = lim_esquerda ; x < lim_direita && !colisao ; x++)
+            {
+                if (getpixel(car, x-car_x, y-car_y) != makecol(255,0,255) && getpixel(obstaculo, x-obs_x, y-obs_y) != makecol(255,0,255))
+                    colisao=TRUE;
+            }
+        }
+    }
+    return colisao;
 }
 void incremento_score()
 {
@@ -363,9 +391,9 @@ void jogo()
                 /// Aqui terá duas funções, uma para mudar para a tela mudança_de_fase, pra informar que a pessoa está indo para
                 /// a fase 2. E o recomeço dessa mesma função, porém com um fundo diferente e com os objetos caindo mais rápido.
             }
-            else if (colisao_de_poligonos(pneu_x, pneu_y, pneu->w, pneu->h, car_x, car_y, carro->w, carro->h)== TRUE ||
-                colisao_de_poligonos(pneu2_x, pneu2_y, pneu->w, pneu->h, car_x, car_y, carro->w, carro->h)== TRUE ||
-                colisao_de_poligonos(pneu3_x, pneu3_y , pneu->w, pneu->h, car_x, car_y, carro->w, carro->h) == TRUE)
+            else if (colisao_pixel_per_pixel(carro,car_x,car_y,pneu,pneu_x,pneu_y) == TRUE ||
+                colisao_pixel_per_pixel(carro,car_x,car_y,pneu,pneu2_x,pneu2_y)== TRUE ||
+                colisao_pixel_per_pixel(carro,car_x,car_y,banana,pneu3_x,pneu3_y) == TRUE)
             {
                 freeze=tempo;
                 scoreatual=score;

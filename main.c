@@ -428,6 +428,7 @@ int main()
     {
         if (estado_de_tela == PREGAME){
             stop_sample(fundo_game);
+            stop_sample(musica_de_fundo);
             play_sample(musica_de_fundo,255,128,1000,TRUE);
             pregame();
         }

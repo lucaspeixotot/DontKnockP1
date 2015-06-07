@@ -108,7 +108,7 @@ void colisoes(int freeze, float pneu_x, float pneu_y, float pneu2_x, float pneu2
     ///BITMAPS PARA A PARALIZAÇÃO
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista10.bmp",NULL);
     BITMAP *obs = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *car = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
@@ -309,7 +309,7 @@ void jogo()
     ///INICIO DO JOGO E BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pistafeita.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista10.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
@@ -344,11 +344,11 @@ void jogo()
             pneu_y=pneu_y+velocidade;
             pneu2_y=pneu2_y+velocidade;
             pneu3_y=pneu3_y+velocidade;
-            if (car_x>=700)
+            if (car_x>=619)
             {
                     car_x=car_x-velocidade_car;
             }
-            if (car_x<=50)
+            if (car_x<=125)
             {
                 car_x=car_x+velocidade_car;
             }
@@ -359,25 +359,25 @@ void jogo()
             draw_sprite(telafake,carro,car_x,car_y);
             if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
             {
-                pneu_x=rand()%700;
-                while (pneu_x<47)
-                    pneu_x=rand()%700;
+                pneu_x=rand()%619;
+                while (pneu_x<125)
+                    pneu_x=rand()%619;
                 pneu_y=0;
                 marcador_obstaculos=tempo;
             }
             if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
             {
-                pneu2_x=rand()%700;
-                while (pneu2_x<47)
-                    pneu2_x=rand()%700;
+                pneu2_x=rand()%619;
+                while (pneu2_x<125)
+                    pneu2_x=rand()%619;
                 pneu2_y=0;
                 marcador_obstaculos2=tempo;
             }
             if (tempo - marcador_obstaculos3 >=1200 && pneu3_y>=600)
             {
-                pneu3_x=rand()%700;
-                while (pneu3_x<47)
-                    pneu3_x=rand()%700;
+                pneu3_x=rand()%619;
+                while (pneu3_x<125)
+                    pneu3_x=rand()%619;
                 pneu3_y=0;
                 marcador_obstaculos3=tempo;
             }

@@ -44,10 +44,6 @@ int colisao_pixel_per_pixel(BITMAP* car, float car_x, float car_y, BITMAP* obsta
     }
     return colisao;
 }
-void incremento_score()
-{
-    score++;
-}
 void decorrer_do_tempo()
 {
     tempo++;
@@ -88,8 +84,6 @@ void inicio()
     tickrate=0;
     LOCK_FUNCTION(decorrer_tickrate);
     LOCK_VARIABLE(tickrate);
-    score=0;
-    install_int_ex(incremento_score,SECS_TO_TIMER(1));
     install_int_ex(decorrer_tickrate,BPS_TO_TIMER(100));
     install_int_ex(decorrer_do_tempo, MSEC_TO_TIMER(1));
     LOCK_VARIABLE(fechar_prog);
@@ -370,7 +364,7 @@ void jogo_iniciante()
     srand(time(NULL));
     marcador_obstaculos1=tempo;
     marcador_obstaculos2=tempo;
-    score=0;
+    score=-2;
     tickrate=0;
 
     ///INICIO DO JOGO E BITMAPS
@@ -419,6 +413,7 @@ void jogo_iniciante()
             draw_sprite(telafake,carro,car_x,car_y);
             if (tempo - marcador_obstaculos1 >= 300 && pneu_y >= 600)
             {
+                score++;
                 pneu_x = rand()%619;
                 while (pneu_x < 125)
                     pneu_x = rand()%619;
@@ -427,6 +422,7 @@ void jogo_iniciante()
             }
             if (tempo - marcador_obstaculos2 >= 700 && banana_y >= 600)
             {
+                score++;
                 banana_x = rand()%619;
                 while (banana_x < 125)
                     banana_x = rand()%619;
@@ -435,7 +431,10 @@ void jogo_iniciante()
             }
             draw_sprite(telafake,pneu,pneu_x,pneu_y);
             draw_sprite(telafake,banana,banana_x,banana_y);
-            textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            if (score < 0)
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            else
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
             if (score - aux_aumentar_dificuldade >=20)
             {
                 if (velocidade < 8.5)
@@ -498,7 +497,7 @@ void jogo_facil()
     marcador_obstaculos=tempo;
     marcador_obstaculos2=tempo;
     marcador_obstaculos3=tempo;
-    score=0;
+    score=-2;
     tickrate=0;
 
     ///INICIO DO JOGO E BITMAPS
@@ -549,6 +548,7 @@ void jogo_facil()
             draw_sprite(telafake,carro,car_x,car_y);
             if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
             {
+                score++;
                 pneu_x=rand()%619;
                 while (pneu_x<125)
                     pneu_x=rand()%619;
@@ -557,6 +557,7 @@ void jogo_facil()
             }
             if (tempo - marcador_obstaculos2 >=800 && agua_y>=600)
             {
+                score++;
                 agua_x=rand()%619;
                 while (agua_x<125)
                     agua_x=rand()%619;
@@ -565,6 +566,7 @@ void jogo_facil()
             }
             if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
             {
+                score++;
                 banana_x=rand()%619;
                 while (banana_x<125)
                     banana_x=rand()%619;
@@ -574,7 +576,10 @@ void jogo_facil()
             draw_sprite(telafake,pneu,pneu_x,pneu_y);
             draw_sprite(telafake,agua,agua_x,agua_y);
             draw_sprite(telafake,banana,banana_x,banana_y);
-            textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            if (score < 0)
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            else
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
             if (score - aux_aumentar_dificuldade >=25)
             {
                 if (velocidade < 9.5)
@@ -643,7 +648,7 @@ void jogo_razoavel()
     marcador_obstaculos2=tempo;
     marcador_obstaculos3=tempo;
     marcador_obstaculos4=tempo;
-    score=0;
+    score=-2;
     tickrate=0;
 
     ///INICIO DO JOGO E BITMAPS
@@ -694,6 +699,7 @@ void jogo_razoavel()
             draw_sprite(telafake,carro,car_x,car_y);
             if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
             {
+                score++;
                 pneu_x=rand()%619;
                 while (pneu_x<125)
                     pneu_x=rand()%619;
@@ -702,6 +708,7 @@ void jogo_razoavel()
             }
             if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
             {
+                score++;
                 pneu2_x=rand()%619;
                 while (pneu2_x<125)
                     pneu2_x=rand()%619;
@@ -710,6 +717,7 @@ void jogo_razoavel()
             }
             if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
             {
+                score++;
                 banana_x=rand()%619;
                 while (banana_x<125)
                     banana_x=rand()%619;
@@ -718,6 +726,7 @@ void jogo_razoavel()
             }
             if (tempo - marcador_obstaculos4 >= 1500 && banana2_y >= 600)
             {
+                score++;
                 banana2_x=rand()%619;
                 while (banana2_x<125)
                     banana2_x=rand()%619;
@@ -728,7 +737,10 @@ void jogo_razoavel()
             draw_sprite(telafake,pneu,pneu2_x,pneu2_y);
             draw_sprite(telafake,banana,banana_x,banana_y);
             draw_sprite(telafake,banana,banana2_x,banana2_y);
-            textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            if (score < 0)
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            else
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
             if (score - aux_aumentar_dificuldade >=30)
             {
                 if (velocidade < 9.5)
@@ -799,7 +811,7 @@ void jogo_dificil()
     marcador_obstaculos3=tempo;
     marcador_obstaculos4=tempo;
     marcador_obstaculos5=tempo;
-    score=0;
+    score=-2;
     tickrate=0;
 
     ///INICIO DO JOGO E BITMAPS
@@ -851,6 +863,7 @@ void jogo_dificil()
             draw_sprite(telafake,carro,car_x,car_y);
             if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
             {
+                score++;
                 pneu_x=rand()%619;
                 while (pneu_x<125)
                     pneu_x=rand()%619;
@@ -859,6 +872,7 @@ void jogo_dificil()
             }
             if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
             {
+                score++;
                 pneu2_x=rand()%619;
                 while (pneu2_x<125)
                     pneu2_x=rand()%619;
@@ -867,6 +881,7 @@ void jogo_dificil()
             }
             if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
             {
+                score++;
                 banana_x=rand()%619;
                 while (banana_x<125)
                     banana_x=rand()%619;
@@ -875,6 +890,7 @@ void jogo_dificil()
             }
             if (tempo - marcador_obstaculos4 >= 1500 && banana2_y >= 600)
             {
+                score++;
                 banana2_x=rand()%619;
                 while (banana2_x<125)
                     banana2_x=rand()%619;
@@ -883,6 +899,7 @@ void jogo_dificil()
             }
             if (tempo - marcador_obstaculos5 >=1900 && banana3_y >=600)
             {
+                score++;
                 banana3_x = rand()%619;
                 while (banana3_x < 125)
                     banana3_x = rand()%619;
@@ -894,7 +911,10 @@ void jogo_dificil()
             draw_sprite(telafake,banana,banana_x,banana_y);
             draw_sprite(telafake,banana,banana2_x,banana2_y);
             draw_sprite(telafake,banana,banana3_x,banana3_y);
-            textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            if (score < 0)
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            else
+                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
             if (score - aux_aumentar_dificuldade >=30)
             {
                 if (velocidade < 9.5)

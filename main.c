@@ -489,7 +489,7 @@ void jogo_facil()
     float car_x=400,car_y=490;
     float velocidade=6.0;
     float velocidade_car=3.0;
-    float pneu_x,pneu_y=600,pneu2_x,pneu2_y=600,pneu3_x,pneu3_y=600;
+    float pneu_x,pneu_y=600,agua_x,agua_y=600,banana_x,banana_y=600;
     int marcador_obstaculos,marcador_obstaculos2,marcador_obstaculos3;
     set_close_button_callback(fechar_programa);
 
@@ -503,10 +503,11 @@ void jogo_facil()
     ///INICIO DO JOGO E BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pista10.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista_deserto.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
+    BITMAP *agua = load_bitmap("imagens/water.bmp",NULL);
 
     while (!fechar_prog && !fechar_jogo)
     {
@@ -530,8 +531,8 @@ void jogo_facil()
             ///UPDATE DAS VARIAVEIS
 
             pneu_y=pneu_y+velocidade;
-            pneu2_y=pneu2_y+velocidade;
-            pneu3_y=pneu3_y+velocidade;
+            agua_y=agua_y+velocidade;
+            banana_y=banana_y+velocidade;
             if (car_x>=619)
             {
                 car_x=car_x-velocidade_car;
@@ -553,25 +554,25 @@ void jogo_facil()
                 pneu_y=0;
                 marcador_obstaculos=tempo;
             }
-            if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
+            if (tempo - marcador_obstaculos2 >=800 && agua_y>=600)
             {
-                pneu2_x=rand()%619;
-                while (pneu2_x<125)
-                    pneu2_x=rand()%619;
-                pneu2_y=0;
+                agua_x=rand()%619;
+                while (agua_x<125)
+                    agua_x=rand()%619;
+                agua_y=0;
                 marcador_obstaculos2=tempo;
             }
-            if (tempo - marcador_obstaculos3 >=1200 && pneu3_y>=600)
+            if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
             {
-                pneu3_x=rand()%619;
-                while (pneu3_x<125)
-                    pneu3_x=rand()%619;
-                pneu3_y=0;
+                banana_x=rand()%619;
+                while (banana_x<125)
+                    banana_x=rand()%619;
+                banana_y=0;
                 marcador_obstaculos3=tempo;
             }
             draw_sprite(telafake,pneu,pneu_x,pneu_y);
-            draw_sprite(telafake,pneu,pneu2_x,pneu2_y);
-            draw_sprite(telafake,banana,pneu3_x,pneu3_y);
+            draw_sprite(telafake,agua,agua_x,agua_y);
+            draw_sprite(telafake,banana,banana_x,banana_y);
             textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
             if (score - aux_aumentar_dificuldade >=25)
             {
@@ -582,8 +583,8 @@ void jogo_facil()
                 }
             }
             if (colisao_pixel_per_pixel(carro,car_x,car_y,pneu,pneu_x,pneu_y) == TRUE ||
-                colisao_pixel_per_pixel(carro,car_x,car_y,pneu,pneu2_x,pneu2_y)== TRUE ||
-                colisao_pixel_per_pixel(carro,car_x,car_y,banana,pneu3_x,pneu3_y) == TRUE)
+                colisao_pixel_per_pixel(carro,car_x,car_y,agua,agua_x,agua_y)== TRUE ||
+                colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana_x,banana_y) == TRUE)
             {
                 freeze=tempo;
                 scoreatual=score;
@@ -592,8 +593,8 @@ void jogo_facil()
                     draw_sprite(telafake,pista,0,0);
                     draw_sprite(telafake,carro,car_x,car_y);
                     draw_sprite(telafake,pneu,pneu_x,pneu_y);
-                    draw_sprite(telafake,pneu,pneu2_x,pneu2_y);
-                    draw_sprite(telafake,banana,pneu3_x,pneu3_y);
+                    draw_sprite(telafake,agua,agua_x,agua_y);
+                    draw_sprite(telafake,banana,banana_x,banana_y);
                     textout_ex(telafake,font,"BATEU MININU",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
                     textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",scoreatual);
                     draw_sprite(screen,telafake,0,0);
@@ -615,6 +616,7 @@ void jogo_facil()
     destroy_bitmap(pneu);
     destroy_bitmap(carro);
     destroy_bitmap(banana);
+    destroy_bitmap(agua);
 
 }
 
@@ -646,7 +648,7 @@ void jogo_razoavel()
     ///INICIO DO JOGO E BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pista10.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista_metal.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);

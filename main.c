@@ -247,6 +247,7 @@ void escolha_da_dificuldade()
         if (key[KEY_ESC])
         {
             fechar_escolha = TRUE;
+            estado_de_tela = PREGAME;
         }
         if (but_iniciante->ativado)
         {
@@ -954,16 +955,16 @@ int main()
     SAMPLE *fundo_razoavel = load_sample("fase_razoavel.wav");
     SAMPLE *fundo_dificil = load_sample("fase_dificil.wav");
 
+    play_sample(musica_de_fundo,255,128,1000,TRUE);
+
     while (!fechar_prog)
     {
         if (estado_de_tela == PREGAME)
         {
-            stop_sample(musica_de_fundo);
             stop_sample(fundo_iniciante);
             stop_sample(fundo_facil);
             stop_sample(fundo_razoavel);
             stop_sample(fundo_dificil);
-            play_sample(musica_de_fundo,255,128,1000,TRUE);
             pregame();
         }
         else if (estado_de_tela == ESCOLHA_NIVEL)
@@ -975,24 +976,28 @@ int main()
             stop_sample(musica_de_fundo);
             play_sample(fundo_iniciante,255,128,1000,TRUE);
             jogo_iniciante();
+            play_sample(musica_de_fundo,255,128,1000,TRUE);
         }
         else if(estado_de_tela == FASE_FACIL)
         {
             stop_sample(musica_de_fundo);
             play_sample(fundo_facil,255,128,1000,TRUE);
             jogo_facil();
+            play_sample(musica_de_fundo,255,128,1000,TRUE);
         }
         else if(estado_de_tela == FASE_RAZOAVEL)
         {
             stop_sample(musica_de_fundo);
             play_sample(fundo_razoavel,255,128,1000,TRUE);
             jogo_razoavel();
+            play_sample(musica_de_fundo,255,128,1000,TRUE);
         }
         else if(estado_de_tela == FASE_DIFICIL)
         {
             stop_sample(musica_de_fundo);
             play_sample(fundo_dificil,255,128,1000,TRUE);
             jogo_dificil();
+            play_sample(musica_de_fundo,255,128,1000,TRUE);
         }
     }
 

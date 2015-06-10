@@ -711,7 +711,7 @@ void jogo_facil()
             }
             if (score - aux_aumentar_dificuldade >=25)
             {
-                if (velocidade < 9.5)
+                if (velocidade < 10.0)
                 {
                     velocidade=velocidade+0.5;
                     aux_aumentar_dificuldade=score;
@@ -961,7 +961,7 @@ void jogo_razoavel()
             }
             if (score - aux_aumentar_dificuldade >=30)
             {
-                if (velocidade < 9.5)
+                if (velocidade < 10.0)
                 {
                     velocidade=velocidade+0.5;
                     aux_aumentar_dificuldade=score;
@@ -1201,7 +1201,7 @@ void jogo_dificil(SAMPLE *fundo_dificil)
                 banana2_y=0;
                 marcador_obstaculos4=tempo;
             }
-            if (tempo - marcador_obstaculos5 >=2100 && agua2_y >=600)
+            if (tempo - marcador_obstaculos5 >=2000 && agua2_y >=600)
             {
                 score++;
                 agua2_x = rand()%619;
@@ -1227,7 +1227,7 @@ void jogo_dificil(SAMPLE *fundo_dificil)
             }
             if (score - aux_aumentar_dificuldade >=30)
             {
-                if (velocidade < 9.5)
+                if (velocidade < 10.0)
                 {
                     velocidade=velocidade+0.5;
                     aux_aumentar_dificuldade=score;

@@ -78,7 +78,21 @@
 	<allegro.h>
 	<stdlib.h>
 
-1433900169 source:c:\users\lucas\desktop\dontknockp1\main.c
+1433899582 source:c:\users\lucas\desktop\dontknockp1\main.c
+	<allegro.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+
+1433885812 source:c:\users\lucas\desktop\dontknockp1-master\botoes.c
+	"botoes.h"
+
+1433885812 c:\users\lucas\desktop\dontknockp1-master\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1433885812 source:c:\users\lucas\desktop\dontknockp1-master\main.c
 	<allegro.h>
 	<stdio.h>
 	<stdlib.h>

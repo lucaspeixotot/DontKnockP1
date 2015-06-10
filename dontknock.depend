@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1433885812 source:c:\users\lucas\desktop\dontknockp1-master\botoes.c
+	"botoes.h"
+
+1433885812 c:\users\lucas\desktop\dontknockp1-master\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1433947349 source:c:\users\lucas\desktop\dontknockp1-master\main.c
+	<allegro.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+
+1433885812 source:c:\users\lucas\desktop\dontknockp1\botoes.c
+	"botoes.h"
+
+1433885812 c:\users\lucas\desktop\dontknockp1\botoes.h
+	<allegro.h>
+	<stdlib.h>
+
+1433948674 source:c:\users\lucas\desktop\dontknockp1\main.c
+	<allegro.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"botoes.h"
+

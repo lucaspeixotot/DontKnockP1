@@ -60,7 +60,7 @@ void fechar_programa()
     fechar_prog=TRUE;
 }
 END_OF_FUNCTION(fechar_programa)
-enum{PREGAME,ESCOLHA_NIVEL,CREDITOS,FASE_INICIANTE,FASE_FACIL,FASE_RAZOAVEL,FASE_DIFICIL};
+enum{PREGAME,ESCOLHA_NIVEL,OLHE_OS_CREDITOS,OLHE_AS_INSTRUCOES,FASE_INICIANTE,FASE_FACIL,FASE_RAZOAVEL,FASE_DIFICIL};
 int estado_de_tela;
 
 ///FUN플O PARA INICIALIZA플O
@@ -105,7 +105,7 @@ void pregame()
 
     ///BITMAP P/ A TELA E SONS
 
-    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
+    BITMAP *telafake = create_bitmap(800, 600);
     BITMAP *bg = load_bitmap("imagens/bg.bmp",NULL);
     BITMAP *iniciar = load_bitmap("imagens/jogar__1.bmp",NULL);
     BITMAP *iniciar_s = load_bitmap("imagens/jogar__2.bmp",NULL);
@@ -169,7 +169,12 @@ void pregame()
         if (creditos->ativado)
         {
             fechar_tela = TRUE;
-            estado_de_tela = CREDITOS;
+            estado_de_tela = OLHE_OS_CREDITOS;
+        }
+        if (instrucoes->ativado)
+        {
+            fechar_tela = TRUE;
+            estado_de_tela = OLHE_AS_INSTRUCOES;
         }
         draw_sprite(screen,telafake,0,0);
         clear(telafake);
@@ -203,7 +208,7 @@ void escolha_da_dificuldade()
 
     /// BITMAP PARA TELA
 
-    BITMAP *telafake = create_bitmap(SCREEN_W,SCREEN_H);
+    BITMAP *telafake = create_bitmap(800,600);
     BITMAP *bg = load_bitmap("imagens/bg.bmp",NULL);
     BITMAP *iniciante = load_bitmap("imagens/INICIANTE.BMP",NULL);
     BITMAP *iniciante_s = load_bitmap("imagens/INICIANTE2.BMP",NULL);
@@ -306,38 +311,19 @@ void creditos()
 
     ///BITMAP P/ A TELA
 
-    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *but = load_bitmap("imagens/bot_img.bmp",NULL);
-    BITMAP *but_s= load_bitmap("imagens/bot_select.bmp",NULL);
-    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
-    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
-    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
-    BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
+    BITMAP *telafake = create_bitmap(800, 600);
+    BITMAP *credito = load_bitmap("imagens/cred.bmp",NULL);
 
-    ///BOTOES
+    ///INICIO DOS CREDITOS
 
-    botao* sair = create_button(but,but_s,click_selecionado,click_ativado,SCREEN_W/2,SCREEN_H/2);
-
-    while (!fechar_prog &&!cred)
+    while (!fechar_prog && !cred)
     {
-        button_input(sair);
-        button_draw(sair,telafake);
-        if (sair->select)
-            draw_sprite(telafake,cursor_selecionado,mouse_x-9,mouse_y);
-        else
-            draw_sprite(telafake,cursor,mouse_x-7,mouse_y);
-        if (sair->ativado)
-        {
-            sair->ativado=FALSE;
-            cred=TRUE;
-            estado_de_tela = PREGAME;
-        }
         if (key[KEY_ESC])
         {
             cred=TRUE;
             estado_de_tela = PREGAME;
         }
-        textout_ex(telafake,font,"VOLTAR",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
+        draw_sprite(telafake,credito,0,0);
         draw_sprite(screen,telafake,0,0);
         clear(telafake);
     }
@@ -345,12 +331,37 @@ void creditos()
     ///FINALIZA플O
 
     destroy_bitmap(telafake);
-    destroy_bitmap(but);
-    destroy_bitmap(but_s);
-    destroy_bitmap(cursor);
-    destroy_bitmap(cursor_selecionado);
-    destroy_sample(click_ativado);
-    destroy_sample(click_selecionado);
+    destroy_bitmap(credito);
+}
+
+///INSTRU합ES
+
+void instrus()
+{
+    int fechar_instru = FALSE;
+    set_close_button_callback(fechar_programa);
+
+    ///BITMAPS
+
+    BITMAP *telafake = create_bitmap(800, 600);
+    BITMAP *inst = load_bitmap("imagens/instru.bmp",NULL);
+
+    while (!fechar_prog && !fechar_instru)
+    {
+        if (key[KEY_ESC])
+        {
+            fechar_instru = TRUE;
+            estado_de_tela = PREGAME;
+        }
+        draw_sprite(telafake,inst,0,0);
+        draw_sprite(screen,telafake,0,0);
+        clear(telafake);
+    }
+
+    ///FINALIZA플O
+
+    destroy_bitmap(telafake);
+    destroy_bitmap(inst);
 }
 
 
@@ -377,7 +388,7 @@ void jogo_iniciante()
 
     ///CRIA플O DOS BITMAPS
 
-    BITMAP *telafake = create_bitmap(SCREEN_W,SCREEN_H);
+    BITMAP *telafake = create_bitmap(800,600);
     BITMAP *pista = load_bitmap("imagens/pista_iniciante.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
@@ -497,6 +508,9 @@ void jogo_iniciante()
                     fprintf(arq_pontuacao,"%d",score);
                     fclose(arq_pontuacao);
                 }
+
+                ///FREEZE-GAME
+
                 while (!fechar_jogo)
                 {
                     ///INPUT
@@ -595,7 +609,7 @@ void jogo_facil()
 
     ///CRIA플O DOS BITMAPS
 
-    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
+    BITMAP *telafake = create_bitmap(800, 600);
     BITMAP *pista = load_bitmap("imagens/pista_facil.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
@@ -711,7 +725,7 @@ void jogo_facil()
             }
             if (score - aux_aumentar_dificuldade >=25)
             {
-                if (velocidade < 10.0)
+                if (velocidade < 9.5)
                 {
                     velocidade=velocidade+0.5;
                     aux_aumentar_dificuldade=score;
@@ -832,7 +846,7 @@ void jogo_razoavel()
 
     ///CRIA플O DOS BITMAPS
 
-    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
+    BITMAP *telafake = create_bitmap(800, 600);
     BITMAP *pista = load_bitmap("imagens/pista_razoavel.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
@@ -961,7 +975,7 @@ void jogo_razoavel()
             }
             if (score - aux_aumentar_dificuldade >=30)
             {
-                if (velocidade < 10.0)
+                if (velocidade < 9.5)
                 {
                     velocidade=velocidade+0.5;
                     aux_aumentar_dificuldade=score;
@@ -1086,7 +1100,7 @@ void jogo_dificil(SAMPLE *fundo_dificil)
 
     ///CRIA플O DOS BITMAPS
 
-    BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
+    BITMAP *telafake = create_bitmap(800, 600);
     BITMAP *pista = load_bitmap("imagens/pista_dificil.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
@@ -1201,7 +1215,7 @@ void jogo_dificil(SAMPLE *fundo_dificil)
                 banana2_y=0;
                 marcador_obstaculos4=tempo;
             }
-            if (tempo - marcador_obstaculos5 >=2000 && agua2_y >=600)
+            if (tempo - marcador_obstaculos5 >=2100 && agua2_y >=600)
             {
                 score++;
                 agua2_x = rand()%619;
@@ -1227,7 +1241,7 @@ void jogo_dificil(SAMPLE *fundo_dificil)
             }
             if (score - aux_aumentar_dificuldade >=30)
             {
-                if (velocidade < 10.0)
+                if (velocidade < 9.5)
                 {
                     velocidade=velocidade+0.5;
                     aux_aumentar_dificuldade=score;
@@ -1361,8 +1375,12 @@ int main()
             stop_sample(fundo_dificil);
             escolha_da_dificuldade();
         }
-        else if (estado_de_tela == CREDITOS)
+        else if (estado_de_tela == OLHE_OS_CREDITOS)
+        {
             creditos();
+        }
+        else if (estado_de_tela == OLHE_AS_INSTRUCOES)
+            instrus();
         else if (estado_de_tela == FASE_INICIANTE)
         {
             stop_sample(musica_de_fundo);

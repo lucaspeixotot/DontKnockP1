@@ -28,8 +28,8 @@ void button_input(botao* pic)
             play_sample(pic->som, 255, 128, 1000, FALSE);
         if (mouse_b==1)
         {
-            mouse_b=0;
             play_sample(pic->som_clique,255,128,2000,FALSE);
+            mouse_b=0;
             if (pic->ativado==TRUE)
             {
                 pic->ativado=FALSE;
@@ -44,13 +44,6 @@ void button_input(botao* pic)
     {
         pic->bip=0;
         pic->select=FALSE;
-    }
-}
-void button_update(botao* pic)
-{
-    if (pic->ativado)
-    {
-
     }
 }
 void button_draw(botao* pic, BITMAP* telafake)

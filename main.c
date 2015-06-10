@@ -1,4 +1,5 @@
 #include <allegro.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include "botoes.h"
@@ -116,9 +117,9 @@ void pregame()
     BITMAP *s_s = load_bitmap("imagens/sair__2.bmp",NULL);
     BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
     BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
-    SAMPLE *click_selecionado = load_sample("click_selecionado.wav");
-    SAMPLE *click_ativado = load_sample("escolhido.wav");
-    SAMPLE *musica_de_fundo = load_sample("fundo.wav");
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
+    SAMPLE *musica_de_fundo = load_sample("sons/fundo.wav");
 
     ///BOTOES
 
@@ -129,15 +130,22 @@ void pregame()
 
     while (!fechar_prog && !fechar_tela)
     {
+        ///INICIALIZAÇÃO DOS BOTÕES
+
         button_input(jogar);
         button_input(sair);
         button_input(creditos);
         button_input(instrucoes);
+
+        /// DESENHO
+
         draw_sprite(telafake,bg,0,0);
         button_draw(jogar,telafake);
         button_draw(instrucoes,telafake);
         button_draw(creditos,telafake);
         button_draw(sair,telafake);
+
+
         if (jogar->select || sair->select || creditos->select || instrucoes->select)
             draw_sprite(telafake,cursor_selecionado,mouse_x-9,mouse_y);
         else
@@ -186,6 +194,8 @@ void pregame()
     destroy_bitmap(cursor_selecionado);
 }
 
+///FUNÇÃO PARA ESCOLHER A DIFICULDADE
+
 void escolha_da_dificuldade()
 {
     int fechar_escolha = FALSE;
@@ -205,15 +215,15 @@ void escolha_da_dificuldade()
     BITMAP *dificil_s = load_bitmap("imagens/DIFICIL2.BMP",NULL);
     BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
     BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
-    SAMPLE *click_selecionado = load_sample("click_selecionado.wav");
-    SAMPLE *click_ativado = load_sample("escolhido.wav");
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
 
     ///BOTÕES
 
-    botao* but_iniciante = create_button(iniciante,iniciante_s,click_selecionado,click_ativado,-1,21);
-    botao* but_facil = create_button(facil,facil_s,click_selecionado,click_ativado,200,21);
-    botao* but_razoavel = create_button(razoavel,razoavel_s,click_selecionado,click_ativado,400,21);
-    botao* but_dificil = create_button(dificil,dificil_s,click_selecionado,click_ativado,601,21);
+    botao* but_iniciante = create_button(iniciante,iniciante_s,click_selecionado,click_ativado,0,20);
+    botao* but_facil = create_button(facil,facil_s,click_selecionado,click_ativado,200,20);
+    botao* but_razoavel = create_button(razoavel,razoavel_s,click_selecionado,click_ativado,401,20);
+    botao* but_dificil = create_button(dificil,dificil_s,click_selecionado,click_ativado,600,20);
 
     while (!fechar_prog && !fechar_escolha)
     {
@@ -299,8 +309,8 @@ void creditos()
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
     BITMAP *but = load_bitmap("imagens/bot_img.bmp",NULL);
     BITMAP *but_s= load_bitmap("imagens/bot_select.bmp",NULL);
-    SAMPLE *click_selecionado = load_sample("click_selecionado.wav");
-    SAMPLE *click_ativado = load_sample("escolhido.wav");
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
     BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
     BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
 
@@ -351,8 +361,6 @@ void jogo_iniciante()
     ///INICIALIZAÇÃO DAS VARIAVEIS
 
     int fechar_jogo=FALSE;
-    int scoreatual;
-    int freeze;
     int aux_aumentar_dificuldade=0;
     float car_x=400,car_y=490;
     float velocidade=5.0;
@@ -367,13 +375,43 @@ void jogo_iniciante()
     score=-2;
     tickrate=0;
 
-    ///INICIO DO JOGO E BITMAPS
+    ///CRIAÇÃO DOS BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W,SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pista10.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista_iniciante.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
+    BITMAP *best = load_bitmap("imagens/best.bmp",NULL);
+    BITMAP *atual = load_bitmap("imagens/score.bmp",NULL);
+    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
+    BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
+    BITMAP *tentar = load_bitmap("imagens/tentar.bmp",NULL);
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
+
+    ///CRIAÇÃO DOS ELEMENTOS NECESSARIOS PARA O SCORE
+
+    int pontuacao;
+    FILE *arq_pontuacao;
+    arq_pontuacao = fopen("score_iniciante.txt","r");
+    fscanf(arq_pontuacao,"%d",&pontuacao);
+    fclose(arq_pontuacao);
+    arq_pontuacao = fopen("score_iniciante.txt","w");
+    fprintf(arq_pontuacao,"%d",pontuacao);
+    fclose(arq_pontuacao);
+
+    ///FONTS
+
+    FONT *edessa_score = load_font("edessa_score.pcx",NULL,NULL);
+    FONT *score_freeze = load_font("score_freeze.pcx",NULL,NULL);
+    FONT *gameover = load_font("gameover.pcx",NULL,NULL);
+
+    ///BOTÃO DE TRY
+
+    botao* denovo = create_button(tentar,tentar,click_selecionado,click_ativado,700,240);
+
+    ///INICIALIZAÇÃO DO LOOP DO JOGO
 
     while (!fechar_jogo && !fechar_prog)
     {
@@ -383,7 +421,8 @@ void jogo_iniciante()
             if (key[KEY_ESC])
             {
                 fechar_jogo=TRUE;
-                estado_de_tela = PREGAME;
+                estado_de_tela = ESCOLHA_NIVEL;
+                key[KEY_ESC] = FALSE;
             }
             if(key[KEY_RIGHT])
             {
@@ -411,7 +450,7 @@ void jogo_iniciante()
 
             draw_sprite(telafake,pista,0,0);
             draw_sprite(telafake,carro,car_x,car_y);
-            if (tempo - marcador_obstaculos1 >= 300 && pneu_y >= 600)
+            if (tempo - marcador_obstaculos1 >= 500 && pneu_y >= 600)
             {
                 score++;
                 pneu_x = rand()%619;
@@ -420,7 +459,7 @@ void jogo_iniciante()
                 pneu_y = 0;
                 marcador_obstaculos1 = tempo;
             }
-            if (tempo - marcador_obstaculos2 >= 700 && banana_y >= 600)
+            if (tempo - marcador_obstaculos2 >= 900 && banana_y >= 600)
             {
                 score++;
                 banana_x = rand()%619;
@@ -432,9 +471,15 @@ void jogo_iniciante()
             draw_sprite(telafake,pneu,pneu_x,pneu_y);
             draw_sprite(telafake,banana,banana_x,banana_y);
             if (score < 0)
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"0");
+            }
             else
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+            }
             if (score - aux_aumentar_dificuldade >=20)
             {
                 if (velocidade < 8.5)
@@ -446,21 +491,60 @@ void jogo_iniciante()
             if (colisao_pixel_per_pixel(carro,car_x,car_y,pneu,pneu_x,pneu_y) == TRUE ||
                 colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana_x,banana_y)== TRUE)
             {
-                freeze=tempo;
-                scoreatual=score;
-                while (tempo - freeze <=3000)
+                if (pontuacao <= score)
                 {
+                    arq_pontuacao = fopen("score_iniciante.txt","w");
+                    fprintf(arq_pontuacao,"%d",score);
+                    fclose(arq_pontuacao);
+                }
+                while (!fechar_jogo)
+                {
+                    ///INPUT
+
+                    button_input(denovo);
+                    if (denovo->ativado)
+                    {
+                        fechar_jogo = TRUE;
+                        estado_de_tela = FASE_INICIANTE;
+                    }
+                    else if (key[KEY_ESC])
+                    {
+                        key[KEY_ESC] = FALSE;
+                        fechar_jogo = TRUE;
+                        estado_de_tela = ESCOLHA_NIVEL;
+                    }
+
+                    ///DESENHO
+
                     draw_sprite(telafake,pista,0,0);
                     draw_sprite(telafake,carro,car_x,car_y);
                     draw_sprite(telafake,pneu,pneu_x,pneu_y);
                     draw_sprite(telafake,banana,banana_x,banana_y);
-                    textout_ex(telafake,font,"BATEU MININU",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
-                    textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",scoreatual);
+                    textout_ex(telafake,gameover,"GAME OVER",240,50,makecol(255,255,255),-1);
+                    textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                    textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+                    button_draw(denovo,telafake);
+                    if (pontuacao <= score)
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",score);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    else
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",pontuacao);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    if (denovo->select)
+                        draw_sprite(telafake,cursor_selecionado,mouse_x-9,mouse_y);
+                    else
+                        draw_sprite(telafake,cursor,mouse_x-7,mouse_y);
                     draw_sprite(screen,telafake,0,0);
                     clear(telafake);
                 }
-                fechar_jogo = TRUE;
-                estado_de_tela = PREGAME;
             }
             draw_sprite(screen,telafake,0,0);
             clear(telafake);
@@ -475,6 +559,17 @@ void jogo_iniciante()
     destroy_bitmap(carro);
     destroy_bitmap(pneu);
     destroy_bitmap(banana);
+    destroy_bitmap(best);
+    destroy_bitmap(atual);
+    destroy_bitmap(cursor);
+    destroy_bitmap(cursor_selecionado);
+    destroy_bitmap(tentar);
+    destroy_button(denovo);
+    destroy_sample(click_ativado);
+    destroy_sample(click_selecionado);
+    destroy_font(edessa_score);
+    destroy_font(score_freeze);
+    destroy_font(gameover);
 }
 ///FUNÇÃO PARA RODAR O JOGO ( FASE FACIL)
 
@@ -484,8 +579,6 @@ void jogo_facil()
 
     int fechar_jogo=FALSE;
     int aux_aumentar_dificuldade=0;
-    int freeze;
-    int scoreatual;
     float car_x=400,car_y=490;
     float velocidade=6.0;
     float velocidade_car=3.0;
@@ -500,14 +593,43 @@ void jogo_facil()
     score=-2;
     tickrate=0;
 
-    ///INICIO DO JOGO E BITMAPS
+    ///CRIAÇÃO DOS BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pista_deserto.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista_facil.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
     BITMAP *agua = load_bitmap("imagens/water.bmp",NULL);
+    BITMAP *best = load_bitmap("imagens/best.bmp",NULL);
+    BITMAP *atual = load_bitmap("imagens/score.bmp",NULL);
+    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
+    BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
+    BITMAP *tentar = load_bitmap("imagens/tentar.bmp",NULL);
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
+
+    ///CRIAÇÃO DOS ELEMENTOS NECESSARIOS PARA O SCORE
+
+    int pontuacao;
+    FILE *arq_pontuacao;
+    arq_pontuacao = fopen("score_facil.txt","r");
+    fscanf(arq_pontuacao,"%d",&pontuacao);
+    fclose(arq_pontuacao);
+    arq_pontuacao = fopen("score_facil.txt","w");
+    fprintf(arq_pontuacao,"%d",pontuacao);
+    fclose(arq_pontuacao);
+
+    ///FONTS
+
+    FONT *edessa_score = load_font("edessa_score.pcx",NULL,NULL);
+    FONT *score_freeze = load_font("score_freeze.pcx",NULL,NULL);
+    FONT *gameover = load_font("gameover.pcx",NULL,NULL);
+    ///BOTÃO DE TRY
+
+    botao* denovo = create_button(tentar,tentar,click_selecionado,click_ativado,700,240);
+
+    ///INICIALIZAÇÃO DO LOOP DO JOGO
 
     while (!fechar_prog && !fechar_jogo)
     {
@@ -517,7 +639,8 @@ void jogo_facil()
             if (key[KEY_ESC])
             {
                 fechar_jogo=TRUE;
-                estado_de_tela = PREGAME;
+                estado_de_tela = ESCOLHA_NIVEL;
+                key[KEY_ESC] = FALSE;
             }
             if(key[KEY_RIGHT])
             {
@@ -546,7 +669,7 @@ void jogo_facil()
 
             draw_sprite(telafake,pista,0,0);
             draw_sprite(telafake,carro,car_x,car_y);
-            if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
+            if (tempo - marcador_obstaculos >= 600 && pneu_y>=600)
             {
                 score++;
                 pneu_x=rand()%619;
@@ -555,7 +678,7 @@ void jogo_facil()
                 pneu_y=0;
                 marcador_obstaculos=tempo;
             }
-            if (tempo - marcador_obstaculos2 >=800 && agua_y>=600)
+            if (tempo - marcador_obstaculos2 >=1000 && agua_y>=600)
             {
                 score++;
                 agua_x=rand()%619;
@@ -564,7 +687,7 @@ void jogo_facil()
                 agua_y=0;
                 marcador_obstaculos2=tempo;
             }
-            if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
+            if (tempo - marcador_obstaculos3 >=1400 && banana_y>=600)
             {
                 score++;
                 banana_x=rand()%619;
@@ -577,9 +700,15 @@ void jogo_facil()
             draw_sprite(telafake,agua,agua_x,agua_y);
             draw_sprite(telafake,banana,banana_x,banana_y);
             if (score < 0)
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"0");
+            }
             else
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+            }
             if (score - aux_aumentar_dificuldade >=25)
             {
                 if (velocidade < 9.5)
@@ -592,22 +721,64 @@ void jogo_facil()
                 colisao_pixel_per_pixel(carro,car_x,car_y,agua,agua_x,agua_y)== TRUE ||
                 colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana_x,banana_y) == TRUE)
             {
-                freeze=tempo;
-                scoreatual=score;
-                while (tempo - freeze <= 3000)
+                if (pontuacao <= score)
                 {
+                    arq_pontuacao = fopen("score_facil.txt","w");
+                    fprintf(arq_pontuacao,"%d",score);
+                    fclose(arq_pontuacao);
+                }
+
+                ///FREEZE-GAME
+
+
+                while (!fechar_jogo)
+                {
+                    ///INPUT
+
+                    button_input(denovo);
+                    if (denovo->ativado)
+                    {
+                        fechar_jogo = TRUE;
+                        estado_de_tela = FASE_FACIL;
+                    }
+                    else if (key[KEY_ESC])
+                    {
+                        key[KEY_ESC] = FALSE;
+                        fechar_jogo = TRUE;
+                        estado_de_tela = ESCOLHA_NIVEL;
+                    }
+
+                    ///DESENHO
                     draw_sprite(telafake,pista,0,0);
                     draw_sprite(telafake,carro,car_x,car_y);
                     draw_sprite(telafake,pneu,pneu_x,pneu_y);
                     draw_sprite(telafake,agua,agua_x,agua_y);
                     draw_sprite(telafake,banana,banana_x,banana_y);
-                    textout_ex(telafake,font,"BATEU MININU",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
-                    textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",scoreatual);
+                    textout_ex(telafake,gameover,"GAME OVER",240,50,makecol(255,255,255),-1);
+                    textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                    textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+                    button_draw(denovo,telafake);
+                    if (pontuacao <= score)
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",score);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    else
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",pontuacao);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    if (denovo->select)
+                        draw_sprite(telafake,cursor_selecionado,mouse_x-9,mouse_y);
+                    else
+                        draw_sprite(telafake,cursor,mouse_x-7,mouse_y);
                     draw_sprite(screen,telafake,0,0);
                     clear(telafake);
                 }
-                fechar_jogo = TRUE;
-                estado_de_tela = PREGAME;
             }
             draw_sprite(screen,telafake,0,0);
             clear(telafake);
@@ -623,7 +794,17 @@ void jogo_facil()
     destroy_bitmap(carro);
     destroy_bitmap(banana);
     destroy_bitmap(agua);
-
+    destroy_bitmap(best);
+    destroy_bitmap(atual);
+    destroy_bitmap(cursor);
+    destroy_bitmap(cursor_selecionado);
+    destroy_bitmap(tentar);
+    destroy_button(denovo);
+    destroy_sample(click_ativado);
+    destroy_sample(click_selecionado);
+    destroy_font(edessa_score);
+    destroy_font(score_freeze);
+    destroy_font(gameover);
 }
 
 ///FUNÇÃO PARA RODAR O JOGO ( FASE RAZOAVEL )
@@ -634,8 +815,6 @@ void jogo_razoavel()
 
     int fechar_jogo=FALSE;
     int aux_aumentar_dificuldade=0;
-    int freeze;
-    int scoreatual;
     float car_x=400,car_y=490;
     float velocidade=6.0;
     float velocidade_car=3.0;
@@ -651,23 +830,56 @@ void jogo_razoavel()
     score=-2;
     tickrate=0;
 
-    ///INICIO DO JOGO E BITMAPS
+    ///CRIAÇÃO DOS BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pista_metal.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista_razoavel.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
+    BITMAP *best = load_bitmap("imagens/best.bmp",NULL);
+    BITMAP *atual = load_bitmap("imagens/score.bmp",NULL);
+    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
+    BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
+    BITMAP *tentar = load_bitmap("imagens/tentar.bmp",NULL);
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
+
+    ///CRIAÇÃO DOS ELEMENTOS NECESSARIOS PARA O SCORE
+
+    int pontuacao;
+    FILE *arq_pontuacao;
+    arq_pontuacao = fopen("score_razoavel.txt","r");
+    fscanf(arq_pontuacao,"%d",&pontuacao);
+    fclose(arq_pontuacao);
+    arq_pontuacao = fopen("score_razoavel.txt","w");
+    fprintf(arq_pontuacao,"%d",pontuacao);
+    fclose(arq_pontuacao);
+
+    ///FONTS
+
+    FONT *edessa_score = load_font("edessa_score.pcx",NULL,NULL);
+    FONT *score_freeze = load_font("score_freeze.pcx",NULL,NULL);
+    FONT *gameover = load_font("gameover.pcx",NULL,NULL);
+
+    ///BOTÃO DE TRY
+
+    botao* denovo = create_button(tentar,tentar,click_selecionado,click_ativado,700,240);
+
+
+    ///INICIALIZAÇÃO DO LOOP DO JOGO
 
     while (!fechar_prog && !fechar_jogo)
     {
         while(tickrate>0)
         {
             ///INPUT
+
             if (key[KEY_ESC])
             {
                 fechar_jogo=TRUE;
-                estado_de_tela = PREGAME;
+                estado_de_tela = ESCOLHA_NIVEL;
+                key[KEY_ESC] = FALSE;
             }
             if(key[KEY_RIGHT])
             {
@@ -697,7 +909,7 @@ void jogo_razoavel()
 
             draw_sprite(telafake,pista,0,0);
             draw_sprite(telafake,carro,car_x,car_y);
-            if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
+            if (tempo - marcador_obstaculos >= 600 && pneu_y>=600)
             {
                 score++;
                 pneu_x=rand()%619;
@@ -706,7 +918,7 @@ void jogo_razoavel()
                 pneu_y=0;
                 marcador_obstaculos=tempo;
             }
-            if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
+            if (tempo - marcador_obstaculos2 >=1000 && pneu2_y>=600)
             {
                 score++;
                 pneu2_x=rand()%619;
@@ -715,7 +927,7 @@ void jogo_razoavel()
                 pneu2_y=0;
                 marcador_obstaculos2=tempo;
             }
-            if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
+            if (tempo - marcador_obstaculos3 >=1400 && banana_y>=600)
             {
                 score++;
                 banana_x=rand()%619;
@@ -724,7 +936,7 @@ void jogo_razoavel()
                 banana_y=0;
                 marcador_obstaculos3=tempo;
             }
-            if (tempo - marcador_obstaculos4 >= 1500 && banana2_y >= 600)
+            if (tempo - marcador_obstaculos4 >= 1700 && banana2_y >= 600)
             {
                 score++;
                 banana2_x=rand()%619;
@@ -738,9 +950,15 @@ void jogo_razoavel()
             draw_sprite(telafake,banana,banana_x,banana_y);
             draw_sprite(telafake,banana,banana2_x,banana2_y);
             if (score < 0)
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"0");
+            }
             else
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+            }
             if (score - aux_aumentar_dificuldade >=30)
             {
                 if (velocidade < 9.5)
@@ -754,23 +972,66 @@ void jogo_razoavel()
                 colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana_x,banana_y) == TRUE ||
                 colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana2_x,banana2_y) == TRUE)
             {
-                freeze=tempo;
-                scoreatual=score;
-                while (tempo - freeze <= 3000)
+                if (pontuacao <= score)
                 {
+                    arq_pontuacao = fopen("score_razoavel.txt","w");
+                    fprintf(arq_pontuacao,"%d",score);
+                    fclose(arq_pontuacao);
+                }
+
+                ///FREEZE-GAME
+
+
+                while (!fechar_jogo)
+                {
+                    ///INPUT
+
+                    button_input(denovo);
+                    if (denovo->ativado)
+                    {
+                        fechar_jogo = TRUE;
+                        estado_de_tela = FASE_RAZOAVEL;
+                    }
+                    else if (key[KEY_ESC])
+                    {
+                        key[KEY_ESC] = FALSE;
+                        fechar_jogo = TRUE;
+                        estado_de_tela = ESCOLHA_NIVEL;
+                    }
+
+                    ///DESENHO
+
                     draw_sprite(telafake,pista,0,0);
                     draw_sprite(telafake,carro,car_x,car_y);
                     draw_sprite(telafake,pneu,pneu_x,pneu_y);
                     draw_sprite(telafake,pneu,pneu2_x,pneu2_y);
                     draw_sprite(telafake,banana,banana_x,banana_y);
                     draw_sprite(telafake,banana,banana2_x,banana2_y);
-                    textout_ex(telafake,font,"BATEU MININU",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
-                    textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",scoreatual);
+                    textout_ex(telafake,gameover,"GAME OVER",240,50,makecol(255,255,255),-1);
+                    textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                    textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+                    button_draw(denovo,telafake);
+                    if (pontuacao <= score)
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",score);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    else
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",pontuacao);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    if (denovo->select)
+                        draw_sprite(telafake,cursor_selecionado,mouse_x-9,mouse_y);
+                    else
+                        draw_sprite(telafake,cursor,mouse_x-7,mouse_y);
                     draw_sprite(screen,telafake,0,0);
                     clear(telafake);
                 }
-                fechar_jogo = TRUE;
-                estado_de_tela = PREGAME;
             }
             draw_sprite(screen,telafake,0,0);
             clear(telafake);
@@ -782,9 +1043,20 @@ void jogo_razoavel()
 
     destroy_bitmap(telafake);
     destroy_bitmap(pista);
-    destroy_bitmap(pneu);
     destroy_bitmap(carro);
+    destroy_bitmap(pneu);
     destroy_bitmap(banana);
+    destroy_bitmap(best);
+    destroy_bitmap(atual);
+    destroy_bitmap(cursor);
+    destroy_bitmap(cursor_selecionado);
+    destroy_bitmap(tentar);
+    destroy_button(denovo);
+    destroy_sample(click_ativado);
+    destroy_sample(click_selecionado);
+    destroy_font(edessa_score);
+    destroy_font(score_freeze);
+    destroy_font(gameover);
 }
 
 
@@ -796,8 +1068,6 @@ void jogo_dificil()
 
     int fechar_jogo=FALSE;
     int aux_aumentar_dificuldade=0;
-    int freeze;
-    int scoreatual;
     float car_x=400,car_y=490;
     float velocidade=6.5;
     float velocidade_car=3.0;
@@ -814,23 +1084,56 @@ void jogo_dificil()
     score=-2;
     tickrate=0;
 
-    ///INICIO DO JOGO E BITMAPS
+    ///CRIAÇÃO DOS BITMAPS
 
     BITMAP *telafake = create_bitmap(SCREEN_W, SCREEN_H);
-    BITMAP *pista = load_bitmap("imagens/pista10.bmp",NULL);
+    BITMAP *pista = load_bitmap("imagens/pista_dificil.bmp",NULL);
     BITMAP *pneu = load_bitmap("imagens/pneu.bmp",NULL);
     BITMAP *carro = load_bitmap("imagens/carro_teste.bmp",NULL);
     BITMAP *banana = load_bitmap("imagens/casca_de_banana.bmp",NULL);
+    BITMAP *best = load_bitmap("imagens/best.bmp",NULL);
+    BITMAP *atual = load_bitmap("imagens/score.bmp",NULL);
+    BITMAP *cursor = load_bitmap("imagens/cursor.bmp",NULL);
+    BITMAP *cursor_selecionado = load_bitmap ("imagens/cursor_selecionado.bmp",NULL);
+    BITMAP *tentar = load_bitmap("imagens/tentar.bmp",NULL);
+    SAMPLE *click_selecionado = load_sample("sons/click_selecionado.wav");
+    SAMPLE *click_ativado = load_sample("sons/escolhido.wav");
+
+    ///CRIAÇÃO DOS ELEMENTOS NECESSARIOS PARA O SCORE
+
+    int pontuacao;
+    FILE *arq_pontuacao;
+    arq_pontuacao = fopen("score_dificil.txt","r");
+    fscanf(arq_pontuacao,"%d",&pontuacao);
+    fclose(arq_pontuacao);
+    arq_pontuacao = fopen("score_dificil.txt","w");
+    fprintf(arq_pontuacao,"%d",pontuacao);
+    fclose(arq_pontuacao);
+
+    ///FONTS
+
+    FONT *edessa_score = load_font("edessa_score.pcx",NULL,NULL);
+    FONT *score_freeze = load_font("score_freeze.pcx",NULL,NULL);
+    FONT *gameover = load_font("gameover.pcx",NULL,NULL);
+
+    ///BOTÃO DE TRY
+
+    botao* denovo = create_button(tentar,tentar,click_selecionado,click_ativado,700,240);
+
+    ///INICIALIZAÇÃO DO LOOP DO JOGO
+
 
     while (!fechar_prog && !fechar_jogo)
     {
         while(tickrate>0)
         {
             ///INPUT
+
             if (key[KEY_ESC])
             {
                 fechar_jogo=TRUE;
-                estado_de_tela = PREGAME;
+                estado_de_tela = ESCOLHA_NIVEL;
+                key[KEY_ESC] = FALSE;
             }
             if(key[KEY_RIGHT])
             {
@@ -852,7 +1155,7 @@ void jogo_dificil()
             {
                 car_x=car_x-velocidade_car;
             }
-            if (car_x<=125)
+            if (car_x<=127)
             {
                 car_x=car_x+velocidade_car;
             }
@@ -861,7 +1164,7 @@ void jogo_dificil()
 
             draw_sprite(telafake,pista,0,0);
             draw_sprite(telafake,carro,car_x,car_y);
-            if (tempo - marcador_obstaculos >= 400 && pneu_y>=600)
+            if (tempo - marcador_obstaculos >= 700 && pneu_y>=600)
             {
                 score++;
                 pneu_x=rand()%619;
@@ -870,7 +1173,7 @@ void jogo_dificil()
                 pneu_y=0;
                 marcador_obstaculos=tempo;
             }
-            if (tempo - marcador_obstaculos2 >=800 && pneu2_y>=600)
+            if (tempo - marcador_obstaculos2 >=1100 && pneu2_y>=600)
             {
                 score++;
                 pneu2_x=rand()%619;
@@ -879,7 +1182,7 @@ void jogo_dificil()
                 pneu2_y=0;
                 marcador_obstaculos2=tempo;
             }
-            if (tempo - marcador_obstaculos3 >=1200 && banana_y>=600)
+            if (tempo - marcador_obstaculos3 >=1500 && banana_y>=600)
             {
                 score++;
                 banana_x=rand()%619;
@@ -888,7 +1191,7 @@ void jogo_dificil()
                 banana_y=0;
                 marcador_obstaculos3=tempo;
             }
-            if (tempo - marcador_obstaculos4 >= 1500 && banana2_y >= 600)
+            if (tempo - marcador_obstaculos4 >= 1800 && banana2_y >= 600)
             {
                 score++;
                 banana2_x=rand()%619;
@@ -897,7 +1200,7 @@ void jogo_dificil()
                 banana2_y=0;
                 marcador_obstaculos4=tempo;
             }
-            if (tempo - marcador_obstaculos5 >=1900 && banana3_y >=600)
+            if (tempo - marcador_obstaculos5 >=2100 && banana3_y >=600)
             {
                 score++;
                 banana3_x = rand()%619;
@@ -912,9 +1215,15 @@ void jogo_dificil()
             draw_sprite(telafake,banana,banana2_x,banana2_y);
             draw_sprite(telafake,banana,banana3_x,banana3_y);
             if (score < 0)
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"0");
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"0");
+            }
             else
-                textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",score);
+            {
+                textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+            }
             if (score - aux_aumentar_dificuldade >=30)
             {
                 if (velocidade < 9.5)
@@ -929,10 +1238,35 @@ void jogo_dificil()
                 colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana2_x,banana2_y) == TRUE ||
                 colisao_pixel_per_pixel(carro,car_x,car_y,banana,banana3_x,banana3_y) == TRUE)
             {
-                freeze=tempo;
-                scoreatual=score;
-                while (tempo - freeze <= 3000)
+                if (pontuacao <= score)
                 {
+                    arq_pontuacao = fopen("score_dificil.txt","w");
+                    fprintf(arq_pontuacao,"%d",score);
+                    fclose(arq_pontuacao);
+                }
+
+                ///FREEZE-GAME
+
+
+                while (!fechar_jogo)
+                {
+                    ///INPUT
+
+                    button_input(denovo);
+                    if (denovo->ativado)
+                    {
+                        fechar_jogo = TRUE;
+                        estado_de_tela = FASE_DIFICIL;
+                    }
+                    else if (key[KEY_ESC])
+                    {
+                        key[KEY_ESC] = FALSE;
+                        fechar_jogo = TRUE;
+                        estado_de_tela = ESCOLHA_NIVEL;
+                    }
+
+                    ///DESENHO
+
                     draw_sprite(telafake,pista,0,0);
                     draw_sprite(telafake,carro,car_x,car_y);
                     draw_sprite(telafake,pneu,pneu_x,pneu_y);
@@ -940,13 +1274,31 @@ void jogo_dificil()
                     draw_sprite(telafake,banana,banana_x,banana_y);
                     draw_sprite(telafake,banana,banana2_x,banana2_y);
                     draw_sprite(telafake,banana,banana3_x,banana3_y);
-                    textout_ex(telafake,font,"BATEU MININU",(SCREEN_W/2)+30,(SCREEN_H/2)+25,makecol(255,255,255),-1);
-                    textprintf_centre_ex(telafake,font,20,50,makecol(255,255,255),-1,"%d",scoreatual);
+                    textout_ex(telafake,gameover,"GAME OVER",240,50,makecol(255,255,255),-1);
+                    textprintf_centre_ex(telafake,edessa_score,45,250,makecol(255,255,255),-1,"Score:");
+                    textprintf_centre_ex(telafake,edessa_score,40,285,makecol(255,255,255),-1,"%d",score);
+                    button_draw(denovo,telafake);
+                    if (pontuacao <= score)
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",score);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    else
+                    {
+                        draw_sprite(telafake,best,700,80);
+                        draw_sprite(telafake,atual,700,400);
+                        textprintf_centre_ex(telafake,score_freeze,743,143,makecol(255,255,255),-1,"%d",pontuacao);
+                        textprintf_centre_ex(telafake,score_freeze,743,450,makecol(255,255,255),-1,"%d",score);
+                    }
+                    if (denovo->select)
+                        draw_sprite(telafake,cursor_selecionado,mouse_x-9,mouse_y);
+                    else
+                        draw_sprite(telafake,cursor,mouse_x-7,mouse_y);
                     draw_sprite(screen,telafake,0,0);
                     clear(telafake);
                 }
-                fechar_jogo = TRUE;
-                estado_de_tela = PREGAME;
             }
             draw_sprite(screen,telafake,0,0);
             clear(telafake);
@@ -958,9 +1310,21 @@ void jogo_dificil()
 
     destroy_bitmap(telafake);
     destroy_bitmap(pista);
-    destroy_bitmap(pneu);
     destroy_bitmap(carro);
+    destroy_bitmap(pneu);
     destroy_bitmap(banana);
+    destroy_bitmap(best);
+    destroy_bitmap(atual);
+    destroy_bitmap(cursor);
+    destroy_bitmap(cursor_selecionado);
+    destroy_bitmap(tentar);
+    destroy_button(denovo);
+    destroy_sample(click_ativado);
+    destroy_sample(click_selecionado);
+    destroy_font(edessa_score);
+    destroy_font(score_freeze);
+    destroy_font(gameover);
+
 
 }
 
@@ -969,11 +1333,11 @@ void jogo_dificil()
 int main()
 {
     inicio();
-    SAMPLE *musica_de_fundo = load_sample("fundo.wav");
-    SAMPLE *fundo_iniciante = load_sample("fase_iniciante.wav");
-    SAMPLE *fundo_facil = load_sample("fase_facil.wav");
-    SAMPLE *fundo_razoavel = load_sample("fase_razoavel.wav");
-    SAMPLE *fundo_dificil = load_sample("fase_dificil.wav");
+    SAMPLE *musica_de_fundo = load_sample("sons/fundo.wav");
+    SAMPLE *fundo_iniciante = load_sample("sons/fase_iniciante.wav");
+    SAMPLE *fundo_facil = load_sample("sons/fase_facil.wav");
+    SAMPLE *fundo_razoavel = load_sample("sons/fase_razoavel.wav");
+    SAMPLE *fundo_dificil = load_sample("sons/fase_dificil.wav");
 
     play_sample(musica_de_fundo,255,128,1000,TRUE);
 
@@ -988,12 +1352,19 @@ int main()
             pregame();
         }
         else if (estado_de_tela == ESCOLHA_NIVEL)
+        {
+            stop_sample(fundo_iniciante);
+            stop_sample(fundo_facil);
+            stop_sample(fundo_razoavel);
+            stop_sample(fundo_dificil);
             escolha_da_dificuldade();
+        }
         else if (estado_de_tela == CREDITOS)
             creditos();
         else if (estado_de_tela == FASE_INICIANTE)
         {
             stop_sample(musica_de_fundo);
+            stop_sample(fundo_iniciante);
             play_sample(fundo_iniciante,255,128,1000,TRUE);
             jogo_iniciante();
             play_sample(musica_de_fundo,255,128,1000,TRUE);
@@ -1001,6 +1372,7 @@ int main()
         else if(estado_de_tela == FASE_FACIL)
         {
             stop_sample(musica_de_fundo);
+            stop_sample(fundo_facil);
             play_sample(fundo_facil,255,128,1000,TRUE);
             jogo_facil();
             play_sample(musica_de_fundo,255,128,1000,TRUE);
@@ -1008,6 +1380,7 @@ int main()
         else if(estado_de_tela == FASE_RAZOAVEL)
         {
             stop_sample(musica_de_fundo);
+            stop_sample(fundo_razoavel);
             play_sample(fundo_razoavel,255,128,1000,TRUE);
             jogo_razoavel();
             play_sample(musica_de_fundo,255,128,1000,TRUE);
@@ -1015,6 +1388,7 @@ int main()
         else if(estado_de_tela == FASE_DIFICIL)
         {
             stop_sample(musica_de_fundo);
+            stop_sample(fundo_dificil);
             play_sample(fundo_dificil,255,128,1000,TRUE);
             jogo_dificil();
             play_sample(musica_de_fundo,255,128,1000,TRUE);

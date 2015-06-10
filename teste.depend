@@ -71,15 +71,16 @@
 	<time.h>
 	"botoes.h"
 
-1433771634 source:c:\users\lucas\desktop\dontknockp1\botoes.c
+1433865718 source:c:\users\lucas\desktop\dontknockp1\botoes.c
 	"botoes.h"
 
-1431804970 c:\users\lucas\desktop\dontknockp1\botoes.h
+1433865723 c:\users\lucas\desktop\dontknockp1\botoes.h
 	<allegro.h>
 	<stdlib.h>
 
-1433777820 source:c:\users\lucas\desktop\dontknockp1\main.c
+1433895693 source:c:\users\lucas\desktop\dontknockp1\main.c
 	<allegro.h>
+	<stdio.h>
 	<stdlib.h>
 	<time.h>
 	"botoes.h"
